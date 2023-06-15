@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JSON File Upload</title>
+</head>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightblue;
+    height: 100vh;
+    margin: 0;
+    align-items: center;
+    align-self: center;
+    align-content: center;
+  }
+  #main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  #main input[type="file"],
+  #main button {
+    margin-right: 10px;
+  }
+  input{
+    align-items: center;
+    align-self: center;
+    align-content: center;
+  }
+  button{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    background-color: transparent;
+    border-color: transparent;
+    align-items: center;
+    align-self: center;
+    align-content: center;
+  }
+  div{
+    align-items: center;
+    opacity: 1;
+  }
+  img{
+    align-items: center;
+  }
+  th,td{
+    border-bottom: 1px solid #ddd;
+  }
+
+</style>
+<body>
+  <div id="main">
+    <input type="file" id="jsonFileInput" accept=".json"> <button onclick="handleFile()"><img src="up.png" width="60px" height="60px" alt="Logo"></button> 
+  </div>
+  <div id="edit">
+
+  </div>
+
+  <script>
+    var main_div = document.getElementById("main");
+    var new_div = document.getElementById("edit")
+    new_div.style.opacity = "0";
+    function handleFile() {
+      const fileInput = document.getElementById('jsonFileInput');
+      const file = fileInput.files[0];
+      console.log("here");
+      if (file) {
+        const reader = new FileReader();
+        console.log("here");
+        reader.onload = function(event) {
+          const contents = event.target.result;
+          const jsonData = JSON.parse(contents);
+          console.log(jsonData);
+          localStorage.setItem("data",jsonData);
+          main_div.style.opacity = "0";
+          new_div.style.opacity = "1";
+          localStorage.setItem("index","0")
+          make_new_div(jsonData[0])
+        };
+
+        reader.readAsText(file);
+        
+      }
+      function make_new_div(object){
+        var new_div = document.getElementById("edit")
+        let title = object['title']
+        let label = object['label']
+        let desc = object['description']
+        let message = object['message']
+        console.log(title)
+      }
+    }
+  </script>
+</body>
+</html>
+
+
