@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON File Upload</title>
+</head>
+<style>
+    body {
+        background-color: lightblue;
+    }
+    
+    .buttonDiv{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding-top: 20px;
+        padding-left: 20px;
+    }
+
+    .button{
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 40px;
+        border-radius: 8px;
+        border:solid;
+    }
+    .buttonRound{
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+    }
+    
+    .displayDiv{
+        display:flex;
+        flex-direction:row;
+        justify-content:center;
+    }
+    .displayBox{
+        background-color: white;
+        display:flex;
+        flex-direction:column;
+        width: 500px;
+        height:500px;
+        border-style: solid;
+        text-align: center;
+        overflow-wrap: break-word;
+        overflow:auto;
+    }
+    h2{
+        padding-left:15px;
+        padding-right:15px;
+    }
+    h4{
+        padding-left:15px;
+        padding-right:15px;
+    }
+    textarea{
+        display:flex;
+        justify-content: center;
+        text-align: center;    
+        resize: none;   
+        border:hidden;
+        overflow-wrap:break-word;
+        overflow:visible;          
+    }
+    textarea:focus{
+        outline:none;
+    }
+    .inputH2{
+        font-size: 1.5em;
+        font-weight: bold;
+        font-family: 'Times New Roman', Times, serif;
+        margin: 19.92px 0px;
+        padding: 0px 15px; 
+    }
+    .inputH4{
+        font-size: 1em;
+        font-weight: bold;
+        font-family: 'Times New Roman', Times, serif;
+        margin: 21.28px 0px;
+        padding: 0px 15px;
+         
+
+    }
+    img{
+        align-self: center;
+        cursor: pointer;
+        
+    }
+    
+    
+</style>
+    <body>
+    <div class ="buttonDiv">
+    <button class="button buttonRound">?</button>
+    <button class="button" onclick="convertToEdit()">Edit</button>
+    </div>
+    <div class="displayDiv">
+        <img src="left.png" width="100px" height="100px" alt="Logo" onclick="handleLeftClick()">
+        <div class = "displayBox">
+            <h2 id = "title">Title</h2>
+            <h2 id = "label">Label</h2>
+            <h4 id = "description">Description</h4>
+            <h4 id = "message">Message</h4>
+            
+        </div> 
+        <img src="right.png" width="100px" height="100px" alt="Logo" onclick="handleRightClick()">
+    </div>
+    <div class = "displayDiv">
+        <h2 id = "pageNumber">Page  </h2>
+    </div> 
+    <div class = "displayDiv">
+        <button class = "button"> Finish </button>
+    </div> 
+
+    
+   </body>
+   <script>
+        var eventList = JSON.parse(localStorage.getItem("data"));
+        var currentItem = eventList[index];
+        var index = Number(localStorage.getItem("index"));
+        var title = document.getElementById("title");
+        var label = document.getElementById("label");
+        var description = document.getElementById("description");
+        var message = document.getElementById("message");
+        var pageNumber = document.getElementById("pageNumber");
+        var isEdit = false;
+        updatePage();
+        function updatePage(){
+            currentItem = eventList[index];
+            title.innerText = currentItem['title'];
+            label.innerText = currentItem['label'];
+            description.innerText = currentItem['description'];
+            message.innerText = currentItem['message'];
+            pageNumber.innerText = "Page " + (index+1);
+        }
+        function handleLeftClick(){
+            if(index>0){
+               index--;
+               localStorage.setItem("index",index.toString());
+               updatePage(); 
+            }
+        }
+        function handleRightClick(){
+            if(index<eventList.length){
+                index++;
+                localStorage.setItem("index",index.toString());
+                updatePage();
+            }
+        }
+        function convertToEdit(){
+            
+            if(!isEdit){
+            isEdit=true;
+            title.outerHTML = '<textarea id = "title" class = "inputH2" >' + title.innerText + '</textarea>';
+            label.outerHTML = '<textarea id = "label" class = "inputH2" >' + label.innerText + '</textarea>';
+            description.outerHTML = '<textarea id = "description" class = "inputH4" >' + description.innerText + '</textarea>';
+            message.outerHTML = '<textarea id = "message" class = "inputH4" >' + message.innerText + '</textarea>';
+            title = document.getElementById("title");
+            label = document.getElementById("label");
+            description = document.getElementById("description");
+            message = document.getElementById("message");
+            autoResizeHeight();
+            }
+        }
+        function handleKeyUp(){
+            currentItem['title'] = title;
+            currentItem['label'] = label;
+            currentItem['description'] = description;
+            currentItem['message'] = message;
+            localStorage.setItem("data", JSON.stringify(eventList)); 
+            autoResizeHeight();
+        }
+        function autoResizeHeight(){
+            description.style.height ="";
+            description.style.height = description.scrollHeight + "px";
+            message.style.height= "";
+            message.style.height=message.scrollHeight +"px";
+            
+            console.log(description.style.height + "Scroll: " + description.clientHeight);
+            console.log(message.style.height + "Scroll: " + message.clientHeight);
+
+        }
+   </script>
+    
+
+</html>
