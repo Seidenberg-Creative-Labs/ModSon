@@ -13,7 +13,13 @@
         flex-direction: row;
         justify-content: space-around;
         padding-top: 20px;
-        padding-left: 20px;
+        padding-left: 130px;
+    }
+    .buttonDiv2{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-top: 10px;
     }
 
     .button{
@@ -23,6 +29,8 @@
         font-size: 40px;
         border-radius: 8px;
         border:solid;
+        width:190px;
+        height:60px;
     }
     .buttonRound{
         border-radius: 50%;
@@ -34,6 +42,7 @@
         display:flex;
         flex-direction:row;
         justify-content:center;
+        padding-top: 10px;
     }
     .displayBox{
         background-color: white;
@@ -124,9 +133,9 @@
     <body>
     
     <div class ="buttonDiv">
-    <button class="button buttonRound" alt="Logo" onclick="openPopup()" title="Click here to know More!">?</button>
-    <button class="button" onclick="convertToEdit()">Edit</button>
-    <button class="button" onclick="handleAdd()">Add</button>
+    <button class= "button buttonRound" alt="Logo" onclick="openPopup()" title="Click here to know More!">?</button>
+    <button class= "button" onclick="convertToEdit()">Edit</button>
+    <button class = "button" alt ="logo" onclick='downloadJSON({ filename: "Updated.json" });' > Finish </button>
     </div>
     <div class="displayDiv">
         <img src="left.png" width="100px" height="100px" alt="Logo" onclick="handleLeftClick()">
@@ -139,12 +148,12 @@
         </div> 
         <img src="right.png" width="100px" height="100px" alt="Logo" onclick="handleRightClick()">
     </div>
-    <div class = "displayDiv">
+    <div class = "buttonDiv2">
+        <button class= "button" onclick="handleAdd()">Add</button>
         <h2 id = "pageNumber">Page  </h2>
+        <button class= "button" onclick="handleRemove()">Remove</button>
     </div> 
-    <div class = "displayDiv">
-        <button class = "button" alt ="logo" onclick='downloadJSON({ filename: "Updated.json" });' > Finish </button>
-    </div> 
+  
 
     <div class="overlay" id="overlay" >
         <div class="popup" ondblclick="closePopup()">
@@ -181,12 +190,12 @@
             pageNumber.innerText = "Page " + (index+1);
             }
             else{
-                currentItem = eventList[index];
+            currentItem = eventList[index];
             title.value = currentItem['title'];
             label.value = currentItem['label'];
             description.value = currentItem['description'];
             message.value = currentItem['message'];
-            pageNumber.value = "Page " + (index+1);
+            pageNumber.innerText = "Page " + (index+1);
             }
         }
         function handleLeftClick(){
@@ -244,6 +253,22 @@
             localStorage.setItem("data", JSON.stringify(eventList)); 
             updatePage();
             }
+        }
+        function handleRemove(){
+            if(eventList.length>=1){
+                eventList.splice(index,1);
+                if(eventList.length==0){
+                    var object = {"label":"State or Federal?","title":"Title","message":"Enter message...","description":"Enter description..." };
+                    eventList.push(object);
+                }
+                else if(index==eventList.length){
+                    index=eventList.length-1;
+                }
+                updatePage();
+                localStorage.setItem("index",index.toString());
+                localStorage.setItem("data", JSON.stringify(eventList));
+            }
+            
         }
         function openPopup() {
             var overlay = document.getElementById('overlay');
