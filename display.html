@@ -59,9 +59,8 @@
         justify-content: center;
         text-align: center;    
         resize: none;   
-        border:hidden;
-        overflow-wrap:break-word;
-        overflow:visible;          
+        border: hidden;
+        overflow: auto;
     }
     textarea:focus{
         outline:none;
@@ -79,13 +78,11 @@
         font-family: 'Times New Roman', Times, serif;
         margin: 21.28px 0px;
         padding: 0px 15px;
-         
-
+        height:150px;
     }
     img{
         align-self: center;
         cursor: pointer;
-        
     }
     
     
@@ -94,6 +91,7 @@
     <div class ="buttonDiv">
     <button class="button buttonRound">?</button>
     <button class="button" onclick="convertToEdit()">Edit</button>
+    <button class="button" onclick="handleAdd()">Add</button>
     </div>
     <div class="displayDiv">
         <img src="left.png" width="100px" height="100px" alt="Logo" onclick="handleLeftClick()">
@@ -110,7 +108,7 @@
         <h2 id = "pageNumber">Page  </h2>
     </div> 
     <div class = "displayDiv">
-        <button class = "button"> Finish </button>
+        <button class = "button" onclick='downloadCSV({ filename: "Updated.json" });'> Finish </button>
     </div> 
 
     
@@ -127,61 +125,80 @@
         var isEdit = false;
         updatePage();
         function updatePage(){
+            if(!isEdit){
             currentItem = eventList[index];
             title.innerText = currentItem['title'];
             label.innerText = currentItem['label'];
             description.innerText = currentItem['description'];
             message.innerText = currentItem['message'];
             pageNumber.innerText = "Page " + (index+1);
+            }
+            else{
+                currentItem = eventList[index];
+            title.value = currentItem['title'];
+            label.value = currentItem['label'];
+            description.value = currentItem['description'];
+            message.value = currentItem['message'];
+            pageNumber.value = "Page " + (index+1);
+            }
         }
         function handleLeftClick(){
             if(index>0){
                index--;
                localStorage.setItem("index",index.toString());
+               console.log(index);
                updatePage(); 
             }
         }
         function handleRightClick(){
-            if(index<eventList.length){
+            if(index<eventList.length-1){
                 index++;
                 localStorage.setItem("index",index.toString());
+                console.log(index);
                 updatePage();
             }
         }
         function convertToEdit(){
-            
             if(!isEdit){
             isEdit=true;
-            title.outerHTML = '<textarea id = "title" class = "inputH2" >' + title.innerText + '</textarea>';
-            label.outerHTML = '<textarea id = "label" class = "inputH2" >' + label.innerText + '</textarea>';
-            description.outerHTML = '<textarea id = "description" class = "inputH4" >' + description.innerText + '</textarea>';
-            message.outerHTML = '<textarea id = "message" class = "inputH4" >' + message.innerText + '</textarea>';
+            title.outerHTML = '<textarea id = "title" class = "inputH2" onkeyup = "handleKeyUp()">' + title.innerText + '</textarea>';
+            label.outerHTML = '<textarea id = "label" class = "inputH2" onkeyup = "handleKeyUp()">' + label.innerText + '</textarea>';
+            description.outerHTML = '<textarea id = "description" class = "inputH4" onkeyup = "handleKeyUp()">' + description.innerText + '</textarea>';
+            message.outerHTML = '<textarea id = "message" class = "inputH4" onkeyup = "handleKeyUp()">' + message.innerText + '</textarea>';
             title = document.getElementById("title");
             label = document.getElementById("label");
             description = document.getElementById("description");
             message = document.getElementById("message");
-            autoResizeHeight();
             }
         }
         function handleKeyUp(){
-            currentItem['title'] = title;
-            currentItem['label'] = label;
-            currentItem['description'] = description;
-            currentItem['message'] = message;
+            eventList[index]['title'] = title.value;
+            eventList[index]['label'] = label.value;
+            eventList[index]['description'] = description.value;
+            eventList[index]['message'] = message.value;
             localStorage.setItem("data", JSON.stringify(eventList)); 
-            autoResizeHeight();
         }
-        function autoResizeHeight(){
-            description.style.height ="";
-            description.style.height = description.scrollHeight + "px";
-            message.style.height= "";
-            message.style.height=message.scrollHeight +"px";
-            
-            console.log(description.style.height + "Scroll: " + description.clientHeight);
-            console.log(message.style.height + "Scroll: " + message.clientHeight);
-
+        function downloadCSV(args) {
+            var data, filename, link;
+            var csv = 'data:text/json;charset=utf-8,' + JSON.stringify(eventList);
+            filename = args.filename || 'export.csv';
+            data = encodeURI(csv);
+            link = document.createElement('a');
+            link.setAttribute('href', data);
+            link.setAttribute('download', filename);
+            link.click();
         }
-   </script>
+        function handleAdd(){
+            if( eventList[eventList.length-1]['title']!=("Title")){
+            var object = {"label":"State or Federal?","title":"Title","message":"Enter message...","description":"Enter description..." };
+            eventList.push(object);
+            index = eventList.length-1;
+            localStorage.setItem("index",index.toString());
+            localStorage.setItem("data", JSON.stringify(eventList)); 
+            updatePage();
+            }
+        }
+          </script>
     
 
 </html>
