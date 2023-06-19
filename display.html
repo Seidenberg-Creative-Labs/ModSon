@@ -84,12 +84,47 @@
         align-self: center;
         cursor: pointer;
     }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .popup {
+      background-color: rgb(255, 255, 255);
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 400px;
+      text-align: center;
+      font-family: "Arial";
+    }
+
+    #imageContainer {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 999;
+    }
+    #imageContainer img {
+      width: 60px;
+      height: 60px;
+      position: relative;
+      cursor: help;
+    }
     
     
 </style>
     <body>
+    
     <div class ="buttonDiv">
-    <button class="button buttonRound">?</button>
+    <button class="button buttonRound" alt="Logo" onclick="openPopup()" title="Click here to know More!">?</button>
     <button class="button" onclick="convertToEdit()">Edit</button>
     <button class="button" onclick="handleAdd()">Add</button>
     </div>
@@ -108,10 +143,22 @@
         <h2 id = "pageNumber">Page  </h2>
     </div> 
     <div class = "displayDiv">
-        <button class = "button" onclick='downloadCSV({ filename: "Updated.json" });'> Finish </button>
+        <button class = "button" alt ="logo" onclick='downloadJSON({ filename: "Updated.json" });' > Finish </button>
     </div> 
 
-    
+    <div class="overlay" id="overlay" >
+        <div class="popup" ondblclick="closePopup()">
+          <h2>Title</h2>
+          <p>Name of the issue.</p>
+          <h2>Label</h2>
+          <p>Whether the issue is a federal issue or state issue.</p>
+          <h2>Message</h2>
+          <p>What the user will send to the representative.</p>
+          <h2> Description </h2>
+          <p> Description of the issue to the user. This is NOT sent to the representative</p>
+          <button onclick="closePopup()">Close</button>
+        </div>
+      </div>
    </body>
    <script>
         var eventList = JSON.parse(localStorage.getItem("data"));
@@ -178,7 +225,7 @@
             eventList[index]['message'] = message.value;
             localStorage.setItem("data", JSON.stringify(eventList)); 
         }
-        function downloadCSV(args) {
+        function downloadJSON(args) {
             var data, filename, link;
             var csv = 'data:text/json;charset=utf-8,' + JSON.stringify(eventList);
             filename = args.filename || 'export.csv';
@@ -197,6 +244,15 @@
             localStorage.setItem("data", JSON.stringify(eventList)); 
             updatePage();
             }
+        }
+        function openPopup() {
+            var overlay = document.getElementById('overlay');
+            overlay.style.display = 'flex';
+        }
+
+        function closePopup() {
+            var overlay = document.getElementById('overlay');
+            overlay.style.display = 'none';
         }
           </script>
     
