@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON File Upload</title>
+</head>
+<style>
+    body {
+        background-color: lightblue;
+    }
+    
+    .buttonDiv{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding-top: 20px;
+        padding-left: 130px;
+    }
+    .buttonDiv2{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-top: 10px;
+    }
+
+    .button{
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 40px;
+        border-radius: 8px;
+        border:solid;
+        width:190px;
+        height:60px;
+    }
+    .buttonRound{
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+    }
+    
+    .displayDiv{
+        display:flex;
+        flex-direction:row;
+        justify-content:center;
+        padding-top: 10px;
+    }
+    .displayBox{
+        background-color: white;
+        display:flex;
+        flex-direction:column;
+        width: 500px;
+        height:500px;
+        border-style: solid;
+        text-align: center;
+        overflow-wrap: break-word;
+        overflow:auto;
+    }
+    h2{
+        padding-left:15px;
+        padding-right:15px;
+    }
+    h4{
+        padding-left:15px;
+        padding-right:15px;
+    }
+    textarea{
+        display:flex;
+        justify-content: center;
+        text-align: center;    
+        resize: none;   
+        border: hidden;
+        overflow: auto;
+    }
+    textarea:focus{
+        outline:none;
+    }
+    .inputH2{
+        font-size: 1.5em;
+        font-weight: bold;
+        font-family: 'Times New Roman', Times, serif;
+        margin: 19.92px 0px;
+        padding: 0px 15px; 
+    }
+    .inputH4{
+        font-size: 1em;
+        font-weight: bold;
+        font-family: 'Times New Roman', Times, serif;
+        margin: 21.28px 0px;
+        padding: 0px 15px;
+        height:150px;
+    }
+    img{
+        align-self: center;
+        cursor: pointer;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .popup {
+      background-color: rgb(255, 255, 255);
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 400px;
+      text-align: center;
+      font-family: "Arial";
+    }
+
+    #imageContainer {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 999;
+    }
+    #imageContainer img {
+      width: 60px;
+      height: 60px;
+      position: relative;
+      cursor: help;
+    }
+    
+    
+</style>
+    <body>
+    
+    <div class ="buttonDiv">
+    <button class= "button buttonRound" alt="Logo" onclick="openPopup()" title="Click here to know More!">?</button>
+    <button class= "button" onclick="convertToEdit()">Edit</button>
+    <button class = "button" alt ="logo" onclick='downloadJSON({ filename: "Updated.json" });' > Finish </button>
+    </div>
+    <div class="displayDiv">
+        <img src="left.png" width="100px" height="100px" alt="Logo" onclick="handleLeftClick()">
+        <div class = "displayBox">
+            <h2 id = "title">Title</h2>
+            <h2 id = "label">Label</h2>
+            <h4 id = "description">Description</h4>
+            <h4 id = "message">Message</h4>
+            
+        </div> 
+        <img src="right.png" width="100px" height="100px" alt="Logo" onclick="handleRightClick()">
+    </div>
+    <div class = "buttonDiv2">
+        <button class= "button" onclick="handleAdd()">Add</button>
+        <h2 id = "pageNumber">Page  </h2>
+        <button class= "button" onclick="handleRemove()">Remove</button>
+    </div> 
+  
+
+    <div class="overlay" id="overlay" >
+        <div class="popup" ondblclick="closePopup()">
+          <h2>Title</h2>
+          <p>Name of the issue.</p>
+          <h2>Label</h2>
+          <p>Whether the issue is a federal issue or state issue.</p>
+          <h2>Message</h2>
+          <p>What the user will send to the representative.</p>
+          <h2> Description </h2>
+          <p> Description of the issue to the user. This is NOT sent to the representative</p>
+          <button onclick="closePopup()">Close</button>
+        </div>
+      </div>
+   </body>
+   <script>
+        var eventList = JSON.parse(localStorage.getItem("data"));
+        var currentItem = eventList[index];
+        var index = Number(localStorage.getItem("index"));
+        var title = document.getElementById("title");
+        var label = document.getElementById("label");
+        var description = document.getElementById("description");
+        var message = document.getElementById("message");
+        var pageNumber = document.getElementById("pageNumber");
+        var isEdit = false;
+        updatePage();
+        function updatePage(){
+            if(!isEdit){
+            currentItem = eventList[index];
+            title.innerText = currentItem['title'];
+            label.innerText = currentItem['label'];
+            description.innerText = currentItem['description'];
+            message.innerText = currentItem['message'];
+            pageNumber.innerText = "Page " + (index+1);
+            }
+            else{
+            currentItem = eventList[index];
+            title.value = currentItem['title'];
+            label.value = currentItem['label'];
+            description.value = currentItem['description'];
+            message.value = currentItem['message'];
+            pageNumber.innerText = "Page " + (index+1);
+            }
+        }
+        function handleLeftClick(){
+            if(index>0){
+               index--;
+               localStorage.setItem("index",index.toString());
+               console.log(index);
+               updatePage(); 
+            }
+        }
+        function handleRightClick(){
+            if(index<eventList.length-1){
+                index++;
+                localStorage.setItem("index",index.toString());
+                console.log(index);
+                updatePage();
+            }
+        }
+        function convertToEdit(){
+            if(!isEdit){
+            isEdit=true;
+            title.outerHTML = '<textarea id = "title" class = "inputH2" onkeyup = "handleKeyUp()">' + title.innerText + '</textarea>';
+            label.outerHTML = '<textarea id = "label" class = "inputH2" onkeyup = "handleKeyUp()">' + label.innerText + '</textarea>';
+            description.outerHTML = '<textarea id = "description" class = "inputH4" onkeyup = "handleKeyUp()">' + description.innerText + '</textarea>';
+            message.outerHTML = '<textarea id = "message" class = "inputH4" onkeyup = "handleKeyUp()">' + message.innerText + '</textarea>';
+            title = document.getElementById("title");
+            label = document.getElementById("label");
+            description = document.getElementById("description");
+            message = document.getElementById("message");
+            }
+        }
+        function handleKeyUp(){
+            eventList[index]['title'] = title.value;
+            eventList[index]['label'] = label.value;
+            eventList[index]['description'] = description.value;
+            eventList[index]['message'] = message.value;
+            localStorage.setItem("data", JSON.stringify(eventList)); 
+        }
+        function downloadJSON(args) {
+            var data, filename, link;
+            var csv = 'data:text/json;charset=utf-8,' + JSON.stringify(eventList);
+            filename = args.filename || 'export.csv';
+            data = encodeURI(csv);
+            link = document.createElement('a');
+            link.setAttribute('href', data);
+            link.setAttribute('download', filename);
+            link.click();
+        }
+        function handleAdd(){
+            if( eventList[eventList.length-1]['title']!=("Title")){
+            var object = {"label":"State or Federal?","title":"Title","message":"Enter message...","description":"Enter description..." };
+            eventList.push(object);
+            index = eventList.length-1;
+            localStorage.setItem("index",index.toString());
+            localStorage.setItem("data", JSON.stringify(eventList)); 
+            updatePage();
+            }
+        }
+        function handleRemove(){
+            if(eventList.length>=1){
+                eventList.splice(index,1);
+                if(eventList.length==0){
+                    var object = {"label":"State or Federal?","title":"Title","message":"Enter message...","description":"Enter description..." };
+                    eventList.push(object);
+                }
+                else if(index==eventList.length){
+                    index=eventList.length-1;
+                }
+                updatePage();
+                localStorage.setItem("index",index.toString());
+                localStorage.setItem("data", JSON.stringify(eventList));
+            }
+            
+        }
+        function openPopup() {
+            var overlay = document.getElementById('overlay');
+            overlay.style.display = 'flex';
+        }
+
+        function closePopup() {
+            var overlay = document.getElementById('overlay');
+            overlay.style.display = 'none';
+        }
+          </script>
+    
+
+</html>
