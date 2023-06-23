@@ -93,6 +93,24 @@
         align-self: center;
         cursor: pointer;
     }
+    option{
+        font-weight: bold;
+        text-align: start;
+        padding-left: 40px;
+    }
+    select{
+        font-size: 1.5em;
+        font-weight: bold;
+        font-family: 'Times New Roman', Times, serif;
+        margin: 19.92px 0px;
+        outline: none;
+        border: none;
+        text-align-last: center;
+        align-self: center;
+        padding-left: 10px;
+        cursor:pointer;
+        
+    }
     .overlay {
       position: fixed;
       top: 0;
@@ -134,16 +152,20 @@
     
     <div class ="buttonDiv">
     <button class= "button buttonRound" alt="Logo" onclick="openPopup()" title="Click here to know More!">?</button>
-    <button class= "button" onclick="convertToEdit()">Edit</button>
+    <button class= "button" id = "editButton" onclick="convertToEdit()">Edit</button>
     <button class = "button" alt ="logo" onclick='downloadJSON({ filename: "Updated.json" });' > Finish </button>
     </div>
     <div class="displayDiv">
         <img src="left.png" width="100px" height="100px" alt="Logo" onclick="handleLeftClick()">
         <div class = "displayBox">
             <h2 id = "title">Title</h2>
-            <h2 id = "label">Label</h2>
+            <select id = "label" onchange="handleSelect()">
+                <option value = "State">State</option>
+                <option value  = "Federal">Federal</option>
+            </select>
             <h4 id = "description">Description</h4>
             <h4 id = "message">Message</h4>
+            
             
         </div> 
         <img src="right.png" width="100px" height="100px" alt="Logo" onclick="handleRightClick()">
@@ -151,7 +173,7 @@
     <div class = "buttonDiv2">
         <button class= "button" onclick="handleAdd()">Add</button>
         <h2 id = "pageNumber">Page  </h2>
-        <button class= "button" onclick="handleRemove()">Remove</button>
+        <button class= "button" ondblclick ="handleRemove()">Remove</button>
     </div> 
   
 
@@ -178,13 +200,18 @@
         var description = document.getElementById("description");
         var message = document.getElementById("message");
         var pageNumber = document.getElementById("pageNumber");
-        var isEdit = false;
+        var editButton = document.getElementById("editButton");
+        var isEdit = localStorage.getItem("isEdit");
+        isEdit = (isEdit === 'true');
+        if(isEdit){
+            isEdit = !isEdit;
+            convertToEdit();
+        }
         updatePage();
         function updatePage(){
             if(!isEdit){
             currentItem = eventList[index];
             title.innerText = currentItem['title'];
-            label.innerText = currentItem['label'];
             description.innerText = currentItem['description'];
             message.innerText = currentItem['message'];
             pageNumber.innerText = "Page " + (index+1);
@@ -192,7 +219,6 @@
             else{
             currentItem = eventList[index];
             title.value = currentItem['title'];
-            label.value = currentItem['label'];
             description.value = currentItem['description'];
             message.value = currentItem['message'];
             pageNumber.innerText = "Page " + (index+1);
@@ -216,15 +242,26 @@
         }
         function convertToEdit(){
             if(!isEdit){
-            isEdit=true;
-            title.outerHTML = '<textarea id = "title" class = "inputH2" onkeyup = "handleKeyUp()">' + title.innerText + '</textarea>';
-            label.outerHTML = '<textarea id = "label" class = "inputH2" onkeyup = "handleKeyUp()">' + label.innerText + '</textarea>';
-            description.outerHTML = '<textarea id = "description" class = "inputH4" onkeyup = "handleKeyUp()">' + description.innerText + '</textarea>';
-            message.outerHTML = '<textarea id = "message" class = "inputH4" onkeyup = "handleKeyUp()">' + message.innerText + '</textarea>';
-            title = document.getElementById("title");
-            label = document.getElementById("label");
-            description = document.getElementById("description");
-            message = document.getElementById("message");
+                isEdit=true;
+                localStorage.setItem("isEdit",isEdit.toString());
+                editButton.innerHTML="View";
+                title.outerHTML = '<textarea id = "title" class = "inputH2" onkeyup = "handleKeyUp()">' + title.innerText + '</textarea>';
+                description.outerHTML = '<textarea id = "description" class = "inputH4" onkeyup = "handleKeyUp()">' + description.innerText + '</textarea>';
+                message.outerHTML = '<textarea id = "message" class = "inputH4" onkeyup = "handleKeyUp()">' + message.innerText + '</textarea>';
+                title = document.getElementById("title");
+                description = document.getElementById("description");
+                message = document.getElementById("message");
+            }
+            else{
+                isEdit=false;
+                localStorage.setItem("isEdit",isEdit.toString());
+                editButton.innerHTML    ="Edit";
+                title.outerHTML = '<h2 id = "title" >' + title.value + '</h2>';
+                description.outerHTML = '<h4 id = "description" >' + description.value + '</h4>';
+                message.outerHTML = '<h4 id = "message" >' + message.value + '</h4>';
+                title = document.getElementById("title");
+                description = document.getElementById("description");
+                message = document.getElementById("message");
             }
         }
         function handleKeyUp(){
@@ -232,6 +269,10 @@
             eventList[index]['label'] = label.value;
             eventList[index]['description'] = description.value;
             eventList[index]['message'] = message.value;
+            localStorage.setItem("data", JSON.stringify(eventList)); 
+        }
+        function handleSelect(){
+            eventList[index]['label'] = label.value;
             localStorage.setItem("data", JSON.stringify(eventList)); 
         }
         function downloadJSON(args) {
