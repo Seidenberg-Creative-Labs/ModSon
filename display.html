@@ -212,6 +212,7 @@
             if(!isEdit){
             currentItem = eventList[index];
             title.innerText = currentItem['title'];
+            label.value = currentItem['label'];
             description.innerText = currentItem['description'];
             message.innerText = currentItem['message'];
             pageNumber.innerText = "Page " + (index+1);
@@ -219,6 +220,7 @@
             else{
             currentItem = eventList[index];
             title.value = currentItem['title'];
+            label.value = currentItem['label'];
             description.value = currentItem['description'];
             message.value = currentItem['message'];
             pageNumber.innerText = "Page " + (index+1);
