@@ -46,7 +46,6 @@
   }
   img{
     align-items: center;
-    cursor: pointer;
   }
   th,td{
     border-bottom: 1px solid #ddd;
@@ -55,16 +54,27 @@
 </style>
 <body>
   <div id="main">
-    <input type="file" id="jsonFileInput" accept=".json"> 
-    <button onclick="handleFile()"><img src="up.png" width="60px" height="60px" alt="Logo"></button> 
+    <input type="file" id="jsonFileInput" accept=".json" onchange = "updateButton()"> 
+    <button id = "uploadButton" onclick="handleFile()"><img src="up.png" width="60px" height="60px" alt="Logo"></button> 
   </div>
   <div id="edit">
 
   </div>
 
   <script>
+    const fileInput = document.getElementById('jsonFileInput');
+    var uploadButton = document.getElementById('uploadButton');
+    var hasFile = false;
+    updateButton();
+    function updateButton(){
+      if(fileInput.value){
+        hasFile = true;
+      }
+      if(hasFile){
+        uploadButton.style.cursor="pointer";
+      }
+    }
     function handleFile() {
-      const fileInput = document.getElementById('jsonFileInput');
       const file = fileInput.files[0];
       console.log("here");
       if (file) {
@@ -79,9 +89,8 @@
           localStorage.setItem("isEdit","false");
         };
         reader.readAsText(file);
-        
+        window.location.href = "./display.html";
       }
-      window.location.href = "./display.html";
     }
   </script>
 </body>
