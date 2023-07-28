@@ -160,8 +160,10 @@
         <div class = "displayBox">
             <h2 id = "title">Title</h2>
             <select id = "label" onchange="handleSelect()">
+                <option value="Enter Label" selected disabled hidden>Enter Label</option>
                 <option value = "State">State</option>
-                <option value  = "Federal">Federal</option>
+                <option value = "Federal">Federal</option>
+                <option value = "Governor">Governor</option>
             </select>
             <h4 id = "description">Description</h4>
             <h4 id = "message">Message</h4>
@@ -193,8 +195,8 @@
    </body>
    <script>
         var eventList = JSON.parse(localStorage.getItem("data"));
-        var currentItem = eventList[index];
         var index = Number(localStorage.getItem("index"));
+        var currentItem = eventList[index];
         var title = document.getElementById("title");
         var label = document.getElementById("label");
         var description = document.getElementById("description");
@@ -289,7 +291,7 @@
         }
         function handleAdd(){
             if( eventList[eventList.length-1]['title']!=("Title")){
-            var object = {"label":"State or Federal?","title":"Title","message":"Enter message...","description":"Enter description..." };
+            var object = {"label":"Enter Label","title":"Title","message":"Enter message...","description":"Enter description..." };
             eventList.push(object);
             index = eventList.length-1;
             localStorage.setItem("index",index.toString());
@@ -301,7 +303,7 @@
             if(eventList.length>=1){
                 eventList.splice(index,1);
                 if(eventList.length==0){
-                    var object = {"label":"State or Federal?","title":"Title","message":"Enter message...","description":"Enter description..." };
+                    var object = {"label":"Enter Label","title":"Title","message":"Enter message...","description":"Enter description..." };
                     eventList.push(object);
                 }
                 else if(index==eventList.length){
